@@ -19,7 +19,7 @@ var categories = [
 	"Кремний"]//5
 
 var reactions = { raw : [
-	"2. KMnO4 + KNO2 + H2O -> MnO2+KNO3+KOH-K2MnO4-O2-H2-H2O",//0
+	"2. KMnO4 + KNO2 + H2O -> MnO2 + KNO3 + KOH - K2MnO4 - O2 - H2 - H2O",//0
 	"1. SO2 + KMnO4 + H2O -> MnSO4 + K2SO4 + H2SO4 - SO3 - S - H2S - MnO2 - K2MnO4 - KOH - H2O - O2",//1
 	"1. SO2 + KMnO4 + KOH -> K2MnO4 +K2SO4 + H2O - H2SO4 - SO3 - S - H2S - MnO2 - O2",//2
 	"3. PH3 + KMnO4 + KOH -> K3PO4 + K2MnO4 + H2O - H3PO4 - P4 - P2O5 - MnO2 - O2"//3
@@ -90,7 +90,10 @@ function switchReaction(reactId) {
 	$(".product:visible").remove();
 	$("#reactionPane").html(reaction.reagents + " -> ");
 	cloneElement("product", reaction.products, function(el, prodId) {
-		el.html(reaction.products[prodId]);
+		var prod = reaction.products[prodId];
+		el.html(prod);
+		var idx = prod.search(/[a-z0-9]/gi);
+		el.html(prod.slice(idx));
 		return true;
 	});
 }
