@@ -1,16 +1,5 @@
-//alert("hello");
-
-/*
 var categories = [
-	"Галогены",//0
-	"O<sub>2</sub>",//1
-	"Cr"]//2
-
-var reactions = { raw : [
-	"0. KMnO4 + KNO2 + H2O -> MnO4+KNO3+KOH-K2MnO4-O2-H2-H2O"//0
-]}
-*/
-var categories = [
+	"Все реакции",//-1
 	"Галогены",//0
 	"Сера",//1
 	"Азот",//2
@@ -57,6 +46,7 @@ function parseReactions() {
 }
 
 function cloneElement(elClassName, arrStrings, initFunc) {
+	$("." + elClassName + ":visible").remove();
 	var el = $("." + elClassName);
 	var last = el;
 	for (str in arrStrings) {
@@ -70,10 +60,6 @@ function cloneElement(elClassName, arrStrings, initFunc) {
 }
 
 function switchCategory(catId) {
-	//alert(id);	
-	$(".reaction:visible").remove();
-	$(".product:visible").remove();
-	$("#reactionPane").html("");
 	cloneElement("reaction", reactions.parsed, function(el, reactId) {
 		var reaction = reactions.parsed[reactId];
 		if (~catId && reaction.categoryId != catId) return false;
@@ -83,32 +69,34 @@ function switchCategory(catId) {
 		})
 		return true;
 	});
+	switchReaction(-1);
 }
 
 function switchReaction(reactId) {
-	var reaction = reactions.parsed[reactId];
-	$(".product:visible").remove();
-	$("#reactionPane").html(reaction.reagents + " -> ");
-	cloneElement("product", reaction.products, function(el, prodId) {
-		var prod = reaction.products[prodId];
-		el.html(prod);
-		var idx = prod.search(/[a-z0-9]/gi);
-		el.html(prod.slice(idx));
-		return true;
-	});
+	if (~reactId) {
+		var reaction = reactions.parsed[reactId];
+		$("#reactionPane").html(reaction.reagents + " -> ");
+		cloneElement("product", reaction.products, function(el, prodId) {
+			var prod = reaction.products[prodId];
+			el.html(prod);
+			var idx = prod.search(/[a-z0-9]/gi);
+			el.html(prod.slice(idx));
+			return true;
+		});
+	} else {
+		$(".product:visible").remove();
+		$("#reactionPane").html("");
+	}
 }
 
 // Shorthand for $( document ).ready()
 $(function() {
-	$(".reaction, .product").hide();
+	$(".reaction, .product, .category").hide();
 	parseReactions();
-	$(".category").click(function() {
-		switchCategory(-1);
-	});
 	cloneElement("category", categories, function(el, id) {
 		el.html(categories[id]);
 		el.click( function() {
-			switchCategory(id);
+			switchCategory(id-1);
 		})
 		return true;		
 	});
