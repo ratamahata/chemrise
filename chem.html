@@ -2,6 +2,7 @@
 <head>
 <script type="text/javascript" language="JavaScript" src="jquery-3.3.1.min.js"> </script>
 <script type="text/javascript" language="JavaScript" src="chem.js"> </script>
+<link href="chem.css" rel="stylesheet">
 </head>
 <body>
 
@@ -12,15 +13,18 @@
 </tr>
 <tr>
 <td rowspan="2">
-<div class="category">Все реакции</div>
+	<div class="category">Все реакции</div>
 </td>
 <td rowspan="2">
-<div class="reaction" style="display:none">Реакция №1</div>
+	<div class="reaction">Реакция №1</div>
 </td>
-<td colspan="2">&nbsp;</td>
+<td colspan="2" id="reactionPane">
+</td>
 </tr>
 <tr>
-<td>&nbsp;</td>
+<td>
+	<div class="product">H<sub>2</sub>O</div>
+</td>
 <td>&nbsp;</td>
 </tr>
 </tbody>
