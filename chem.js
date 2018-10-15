@@ -14,6 +14,8 @@ var reactions = { raw : [
 	"3. PH3 + KMnO4 + KOH -> K3PO4 + K2MnO4 + H2O - H3PO4 - P4 - P2O5 - MnO2 - O2"//3
 ]}
 
+var currentCategoryId, currentReactionId;
+
 /**
  * Shuffles array in place.
  * @param {Array} a items An array containing the items.
@@ -45,7 +47,7 @@ function parseReactions() {
 	}
 }
 
-function cloneElement(elClassName, arrStrings, initFunc) {
+function listArrayElements(elClassName, arrStrings, initFunc) {
 	$("." + elClassName + ":visible").remove();
 	var el = $("." + elClassName);
 	var last = el;
@@ -60,7 +62,10 @@ function cloneElement(elClassName, arrStrings, initFunc) {
 }
 
 function switchCategory(catId) {
-	cloneElement("reaction", reactions.parsed, function(el, reactId) {
+	if (currentCategoryId == catId) return;
+	currentCategoryId = catId;
+
+	listArrayElements("reaction", reactions.parsed, function(el, reactId) {
 		var reaction = reactions.parsed[reactId];
 		if (~catId && reaction.categoryId != catId) return false;
 		el.html(reaction.reagents);
@@ -72,11 +77,14 @@ function switchCategory(catId) {
 	switchReaction(-1);
 }
 
-function switchReaction(reactId) {
+function switchReaction(reactId) {	
+	if (currentReactionId == reactId) return;
+	currentReactionId = reactId;
+
 	if (~reactId) {
 		var reaction = reactions.parsed[reactId];
 		$("#reactionPane").html(reaction.reagents + " -> ");
-		cloneElement("product", reaction.products, function(el, prodId) {
+		listArrayElements("product", reaction.products, function(el, prodId) {
 			var prod = reaction.products[prodId];
 			el.html(prod);
 			var idx = prod.search(/[a-z0-9]/gi);
@@ -93,7 +101,7 @@ function switchReaction(reactId) {
 $(function() {
 	$(".reaction, .product, .category").hide();
 	parseReactions();
-	cloneElement("category", categories, function(el, id) {
+	listArrayElements("category", categories, function(el, id) {
 		el.html(categories[id]);
 		el.click( function() {
 			switchCategory(id-1);
