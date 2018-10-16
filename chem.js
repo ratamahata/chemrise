@@ -92,19 +92,24 @@ function switchContent(selector, oldId, newId, defaultContent) {
 function switchCategory(catId) {
 	if (currentCategoryId == catId) return;
 	selectOneItem("category", catId+1, currentCategoryId+1);
-	currentCategoryId = catId;
 
-	listArrayElements("reaction", reactions.parsed, function(el, reactId) {
+	listArrayElementsCached("reaction", catId, currentCategoryId, reactions.parsed, function(el, reactId) {
 		var reaction = reactions.parsed[reactId];
 		if (~catId && reaction.categoryId != catId) return false;
 		el.html(reaction.reagents);
-		el.click(function() {
-			switchReaction(reactId);
-		})
+		el.attr("onclick", "switchReaction(" + reactId + ")");		
 		return true;
 	});
-	switchReaction(-1);
+	var cl = $(".reaction.selected").attr("class");
+	var reactId = -1;
+	if (typeof cl == "string") {
+		reactId = cl.replace(/[a-z\s]/gi, "");
+	}
+	//alert(reactId);
+	switchReaction(reactId);
+	currentCategoryId = catId;
 }
+
 
 function getProductStr(reaction, prodId) {
 	var prod = reaction.products[prodId];
