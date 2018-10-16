@@ -66,7 +66,7 @@ function listArrayElements(elClassName, arrStrings, initFunc) {
 function listArrayElementsCached(elClassName, id, prevId, arrStrings, initFunc) {
 	var parent = $("." + elClassName).parent();
 	cache["." + elClassName + prevId] = parent.html();
-	var key = elClassName + id;
+	var key = "." + elClassName + id;
 	var value = cache[key];
 	if (typeof value == "string") {
 		parent.html(value);
@@ -106,18 +106,22 @@ function switchCategory(catId) {
 	switchReaction(-1);
 }
 
+function getProductStr(reaction, prodId) {
+	var prod = reaction.products[prodId];
+	var idx = prod.search(/[a-z0-9]/gi);
+	return prod.slice(idx)
+}
+
 function switchReaction(reactId) {	
 	if (currentReactionId == reactId) return;
 	selectOneItem("reaction", reactId, currentReactionId);
 	var reactionStr;
 	if (~reactId) {
 		var reaction = reactions.parsed[reactId];
-		reactionStr = reaction.reagents + " -> ";		
+		reactionStr = reaction.reagents + " -> ";
 		listArrayElementsCached("product", reactId, currentReactionId, reaction.products, function(el, prodId) {
-			var prod = reaction.products[prodId];
-			el.html(prod);
-			var idx = prod.search(/[a-z0-9]/gi);
-			el.html(prod.slice(idx));
+			el.html(getProductStr(reaction, prodId));
+			el.attr('onclick', 'toggleProduct(' + prodId + ')');			
 			return true;
 		});
 	} else {
@@ -126,6 +130,21 @@ function switchReaction(reactId) {
 	}	
 	switchContent("#reactionPane", currentReactionId, reactId, reactionStr);
 	currentReactionId = reactId;
+}
+
+function toggleProduct(prodId) {
+	var p = $(".product"+prodId);
+	var r_el = $("#reactionPane");
+	var r_html = r_el.html();
+	var reaction = reactions.parsed[currentReactionId];
+	if (p.hasClass("selected")) {
+		p.removeClass("selected");
+	} else {
+		p.addClass("selected");
+		if (r_html != (reaction.reagents + " -&gt; ")) r_html += " + ";
+		r_html += getProductStr(reaction, prodId);
+	}
+	r_el.html(r_html);
 }
 
 // Shorthand for $( document ).ready()
