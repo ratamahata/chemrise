@@ -48,9 +48,9 @@ function parseReactions() {
 	}
 }
 
-function listArrayElements(elClassName, arrStrings, initFunc) {
-	$("." + elClassName + ":visible").remove();
-	var el = $("." + elClassName);
+function listArrayElements(selector, arrStrings, initFunc) {
+	$(selector + ":visible").remove();
+	var el = $(selector);
 	var last = el;
 	for (str in arrStrings) {
 		var cloned = el.clone(false);
@@ -62,24 +62,33 @@ function listArrayElements(elClassName, arrStrings, initFunc) {
 	}
 }
 
-function listArrayElementsCached(elClassName, id, prevId, arrStrings, initFunc) {
-	var parent = $("." + elClassName).parent();
-	cache[elClassName + prevId] = parent.html();
-	var key = elClassName + id;
+function listArrayElementsCached(selector, id, prevId, arrStrings, initFunc) {
+	var parent = $(selector).parent();
+	cache[selector + prevId] = parent.html();
+	var key = selector + id;
 	var value = cache[key];
 	if (typeof value == "string") {
 		parent.html(value);
 	} else {
-		listArrayElements(elClassName, arrStrings, initFunc);
+		listArrayElements(selector, arrStrings, initFunc);
 		cache[key] = parent.html();
 	}
+}
+
+function switchContent(selector, oldId, newId, defaultContent) {
+	cache[selector + oldId] = $(selector).html();
+
+	var value = cache[selector + newId];
+	$(selector).html(typeof value == "string"
+		? value
+		: defaultContent);
 }
 
 function switchCategory(catId) {
 	if (currentCategoryId == catId) return;
 	currentCategoryId = catId;
 
-	listArrayElements("reaction", reactions.parsed, function(el, reactId) {
+	listArrayElements(".reaction", reactions.parsed, function(el, reactId) {
 		var reaction = reactions.parsed[reactId];
 		if (~catId && reaction.categoryId != catId) return false;
 		el.html(reaction.reagents);
@@ -93,11 +102,11 @@ function switchCategory(catId) {
 
 function switchReaction(reactId) {	
 	if (currentReactionId == reactId) return;
-
+	var reactionStr;
 	if (~reactId) {
 		var reaction = reactions.parsed[reactId];
-		$("#reactionPane").html(reaction.reagents + " -> ");
-		listArrayElementsCached("product", reactId, currentReactionId, reaction.products, function(el, prodId) {
+		reactionStr = reaction.reagents + " -> ";		
+		listArrayElementsCached(".product", reactId, currentReactionId, reaction.products, function(el, prodId) {
 			var prod = reaction.products[prodId];
 			el.html(prod);
 			var idx = prod.search(/[a-z0-9]/gi);
@@ -106,8 +115,9 @@ function switchReaction(reactId) {
 		});
 	} else {
 		$(".product:visible").remove();
-		$("#reactionPane").html("");
-	}
+		reactionStr = "";
+	}	
+	switchContent("#reactionPane", currentReactionId, reactId, reactionStr);
 	currentReactionId = reactId;
 }
 
@@ -115,7 +125,7 @@ function switchReaction(reactId) {
 $(function() {
 	$(".reaction, .product, .category").hide();
 	parseReactions();
-	listArrayElements("category", categories, function(el, id) {
+	listArrayElements(".category", categories, function(el, id) {
 		el.html(categories[id]);
 		el.click( function() {
 			switchCategory(id-1);
