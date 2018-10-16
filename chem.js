@@ -15,6 +15,7 @@ var reactions = { raw : [
 ]}
 
 var currentCategoryId, currentReactionId;
+var cache = {};
 
 /**
  * Shuffles array in place.
@@ -61,6 +62,19 @@ function listArrayElements(elClassName, arrStrings, initFunc) {
 	}
 }
 
+function listArrayElementsCached(elClassName, id, prevId, arrStrings, initFunc) {
+	var parent = $("." + elClassName).parent();
+	cache[elClassName + prevId] = parent.html();
+	var key = elClassName + id;
+	var value = cache[key];
+	if (typeof value == "string") {
+		parent.html(value);
+	} else {
+		listArrayElements(elClassName, arrStrings, initFunc);
+		cache[key] = parent.html();
+	}
+}
+
 function switchCategory(catId) {
 	if (currentCategoryId == catId) return;
 	currentCategoryId = catId;
@@ -79,12 +93,11 @@ function switchCategory(catId) {
 
 function switchReaction(reactId) {	
 	if (currentReactionId == reactId) return;
-	currentReactionId = reactId;
 
 	if (~reactId) {
 		var reaction = reactions.parsed[reactId];
 		$("#reactionPane").html(reaction.reagents + " -> ");
-		listArrayElements("product", reaction.products, function(el, prodId) {
+		listArrayElementsCached("product", reactId, currentReactionId, reaction.products, function(el, prodId) {
 			var prod = reaction.products[prodId];
 			el.html(prod);
 			var idx = prod.search(/[a-z0-9]/gi);
@@ -95,6 +108,7 @@ function switchReaction(reactId) {
 		$(".product:visible").remove();
 		$("#reactionPane").html("");
 	}
+	currentReactionId = reactId;
 }
 
 // Shorthand for $( document ).ready()
