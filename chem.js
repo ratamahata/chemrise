@@ -17,33 +17,12 @@ var reactions = { raw : [
 var currentCategoryId, currentReactionId;
 var cache = {};
 
-/**
- * Shuffles array in place.
- * @param {Array} a items An array containing the items.
- */
-function shuffle(a) {
-    var j, x, i;
-    for (i = a.length - 1; i > 0; i--) {
-        j = Math.floor(Math.random() * (i + 1));
-        x = a[i];
-        a[i] = a[j];
-        a[j] = x;
-    }
-    return a;
-}
-
 function parseReactions() {
 	var productRegex = /[\+\-]\s*[^\s\+\-]+/gi;
 	var digitRegex = /([a-z])(\d+)/gi;
 	reactions.parsed = [];
 	for (r in reactions.raw) {
-		var obj = {};
-		var s = reactions.raw[r].replace(digitRegex, "$1<sub>$2</sub>");
-		var i1 = s.indexOf(".");
-		var i2 = s.indexOf("->");
-		obj.categoryId = s.slice(0, i1);
-		obj.reagents = s.slice(i1+1, i2).trim();
-		obj.products = shuffle(("+"+s.slice(i2+2).trim()).match(productRegex));	
+		var obj = new Reaction(reactions.raw[r]);
 		reactions.parsed.push(obj);
 	}
 }
@@ -110,13 +89,6 @@ function switchCategory(catId) {
 	currentCategoryId = catId;
 }
 
-
-function getProductStr(reaction, prodId) {
-	var prod = reaction.products[prodId];
-	var idx = prod.search(/[a-z0-9]/gi);
-	return prod.slice(idx)
-}
-
 function switchReaction(reactId) {	
 	if (currentReactionId == reactId) return;
 	selectOneItem("reaction", reactId, currentReactionId);
@@ -125,7 +97,7 @@ function switchReaction(reactId) {
 		var reaction = reactions.parsed[reactId];
 		reactionStr = reaction.reagents + " -> ";
 		listArrayElementsCached("product", reactId, currentReactionId, reaction.products, function(el, prodId) {
-			el.html(getProductStr(reaction, prodId));
+			el.html(reaction.getProductStr(prodId));
 			el.attr('onclick', 'toggleProduct(' + prodId + ')');			
 			return true;
 		});
@@ -142,7 +114,7 @@ function toggleProduct(prodId) {
 	var r_el = $("#reactionPane");
 	var r_html = r_el.html();
 	var reaction = reactions.parsed[currentReactionId];
-	var productStr = getProductStr(reaction, prodId);
+	var productStr = reaction.getProductStr(prodId);
 	if (p.hasClass("selected")) {
 		p.removeClass("selected");		
 		r_html = r_html
