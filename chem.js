@@ -142,12 +142,20 @@ function toggleProduct(prodId) {
 	var r_el = $("#reactionPane");
 	var r_html = r_el.html();
 	var reaction = reactions.parsed[currentReactionId];
+	var productStr = getProductStr(reaction, prodId);
 	if (p.hasClass("selected")) {
-		p.removeClass("selected");
+		p.removeClass("selected");		
+		r_html = r_html
+			.replace(reaction.reagents + " -&gt; ", "##!##")
+			.replace(new RegExp("([^\>a-zA-Z0-9]|$)" + productStr + "([^\<a-zA-Z0-9]|$)"), "$1$2")
+			.replace(/\s+\+\s+$/, "")
+			.replace(/\s+\+\s+\+\s+/, " + ")
+			.replace("##!## + ", "##!##")
+			.replace("##!##", reaction.reagents + " -&gt; ");
 	} else {
 		p.addClass("selected");
 		if (r_html != (reaction.reagents + " -&gt; ")) r_html += " + ";
-		r_html += getProductStr(reaction, prodId);
+		r_html += productStr
 	}
 	r_el.html(r_html);
 }
