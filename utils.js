@@ -12,3 +12,14 @@ function shuffle(a) {
     }
     return a;
 }
+
+function getMissingElements(arr1, arr2) {
+	var missingElements = [];
+	for(i in arr2) {
+		var o = arr2[i];
+		if (!arr1.includes(o) && !missingElements.includes(o)) {
+			missingElements.push(o);
+		}
+	}
+	return missingElements;
+}

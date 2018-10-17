@@ -32,4 +32,32 @@ function Reaction(initStr) {
 	this.getText = function() {
 		return this.reagents + " -> " + this.productsStr;
 	}
+
+	this.getElements = function(str) {
+		return str.match(/[A-Z][a-z]?/g);
+	}
+
+	this.getValidationErrors = function() {
+		if (!this.productsStr || !this.reagents) return [];
+
+		var validationErrors = [];
+		var arrReagents = this.getElements(this.reagents);
+		var arrProd = this.getElements(this.productsStr);
+
+		if (!arrReagents || !arrProd) return [];
+		
+		var missingProducts = getMissingElements(arrProd, arrReagents);
+		var redundantProducts = getMissingElements(arrReagents, arrProd);
+
+		if (missingProducts.length) {
+			validationErrors.push("Среди продуктов реакции не найдены: " + missingProducts.join(", "));
+		}
+		if (redundantProducts.length) {
+			validationErrors.push("Обнаружены лишние продукты реакции: " + redundantProducts.join(", "));
+		}
+		return validationErrors;
+	}
+
+	
+
 }

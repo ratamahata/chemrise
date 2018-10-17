@@ -106,6 +106,7 @@ function switchReaction(reactId) {
 	}	
 	switchContent("#reactionPane", currentReactionId, reactId, reactionStr);
 	currentReactionId = reactId;
+	refreshDescription();
 }
 
 function toggleProduct(prodId) {
@@ -120,6 +121,14 @@ function toggleProduct(prodId) {
 		reaction.addProduct(prodId);
 	}
 	r_el.html(reaction.getText());
+	refreshDescription();
+}
+
+function refreshDescription() {
+	var reaction = reactions.parsed[currentReactionId];
+	$("#descriptionPane").html(currentReactionId < 0
+		? ""
+		: reaction.getValidationErrors().join("<br/>\n<br/>\n"));
 }
 
 // Shorthand for $( document ).ready()
