@@ -84,7 +84,6 @@ function switchCategory(catId) {
 	if (typeof cl == "string") {
 		reactId = cl.replace(/[a-z\s]/gi, "");
 	}
-	//alert(reactId);
 	switchReaction(reactId);
 	currentCategoryId = catId;
 }
@@ -112,24 +111,15 @@ function switchReaction(reactId) {
 function toggleProduct(prodId) {
 	var p = $(".product"+prodId);
 	var r_el = $("#reactionPane");
-	var r_html = r_el.html();
 	var reaction = reactions.parsed[currentReactionId];
-	var productStr = reaction.getProductStr(prodId);
 	if (p.hasClass("selected")) {
-		p.removeClass("selected");		
-		r_html = r_html
-			.replace(reaction.reagents + " -&gt; ", "##!##")
-			.replace(new RegExp("([^\>a-zA-Z0-9]|$)" + productStr + "([^\<a-zA-Z0-9]|$)"), "$1$2")
-			.replace(/\s+\+\s+$/, "")
-			.replace(/\s+\+\s+\+\s+/, " + ")
-			.replace("##!## + ", "##!##")
-			.replace("##!##", reaction.reagents + " -&gt; ");
+		p.removeClass("selected");
+		reaction.removeProduct(prodId);
 	} else {
 		p.addClass("selected");
-		if (r_html != (reaction.reagents + " -&gt; ")) r_html += " + ";
-		r_html += productStr
+		reaction.addProduct(prodId);
 	}
-	r_el.html(r_html);
+	r_el.html(reaction.getText());
 }
 
 // Shorthand for $( document ).ready()
