@@ -38,22 +38,23 @@ function Reaction(initStr) {
 	}
 
 	this.getValidationErrors = function() {
-		if (!this.productsStr || !this.reagents) return [];
-
 		var validationErrors = [];
-		var arrReagents = this.getElements(this.reagents);
-		var arrProd = this.getElements(this.productsStr);
+		if (this.productsStr && this.reagents) {
+			var arrReagents = this.getElements(this.reagents);
+			var arrProd = this.getElements(this.productsStr);
 
-		if (!arrReagents || !arrProd) return [];
-		
-		var missingProducts = getMissingElements(arrProd, arrReagents);
-		var redundantProducts = getMissingElements(arrReagents, arrProd);
+			if (arrReagents && arrProd) {		
+				var missingProducts = getMissingElements(arrProd, arrReagents);
+				var redundantProducts = getMissingElements(arrReagents, arrProd);
 
-		if (missingProducts.length) {
-			validationErrors.push("Среди продуктов реакции не найдены: " + missingProducts.join(", "));
-		}
-		if (redundantProducts.length) {
-			validationErrors.push("Обнаружены лишние продукты реакции: " + redundantProducts.join(", "));
+				if (missingProducts.length) {
+					validationErrors.push("Не все исходные химические элементы найдены среди продуктов реакции.");
+//					validationErrors.push("Среди продуктов реакции не найдены: " + missingProducts.join(", "));
+				}
+				if (redundantProducts.length) {
+					validationErrors.push("Обнаружены лишние продукты реакции: " + redundantProducts.join(", "));
+				}
+			}
 		}
 		return validationErrors;
 	}
