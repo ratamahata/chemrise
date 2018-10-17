@@ -100,13 +100,19 @@ function switchReaction(reactId) {
 			el.attr('onclick', 'toggleProduct(' + prodId + ')');			
 			return true;
 		});
+		if (reaction.isSomeProductSelected()) {
+			$(".checkButton").show();
+		} else {
+			$(".checkButton").hide();
+		}
 	} else {
 		$(".product:visible").remove();
 		reactionStr = "";
+		$(".checkButton").hide();
 	}	
 	switchContent("#reactionPane", currentReactionId, reactId, reactionStr);
+	switchContent("#descriptionPane", currentReactionId, reactId, "");
 	currentReactionId = reactId;
-	refreshDescription();
 }
 
 function toggleProduct(prodId) {
@@ -117,11 +123,21 @@ function toggleProduct(prodId) {
 		p.removeClass("selected");
 		reaction.removeProduct(prodId);
 	} else {
+		$(".checkButton").show();
 		p.addClass("selected");
 		reaction.addProduct(prodId);
 	}
 	r_el.html(reaction.getText());
-	refreshDescription();
+}
+
+function checkProducts() {
+	var reaction = reactions.parsed[currentReactionId];
+	$("#descriptionPane").html(currentReactionId < 0
+		? ""
+		: reaction.getValidationErrors().length > 0
+			? "Неверно! <button onclick='refreshDescription()'>Показать подсказку</button>"
+			: "Молодец, правильно!");
+	
 }
 
 function refreshDescription() {
