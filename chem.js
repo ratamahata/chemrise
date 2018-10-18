@@ -116,9 +116,10 @@ function switchReaction(reactId) {
 }
 
 function toggleProduct(prodId) {
+	var reaction = reactions.parsed[currentReactionId];
+	if (reaction.solved) return;
 	var p = $(".product"+prodId);
 	var r_el = $("#reactionPane");
-	var reaction = reactions.parsed[currentReactionId];
 	if (p.hasClass("selected")) {
 		p.removeClass("selected");
 		reaction.removeProduct(prodId);
@@ -132,15 +133,20 @@ function toggleProduct(prodId) {
 
 function checkProducts() {
 	var reaction = reactions.parsed[currentReactionId];
+	var passed = false;
 	$("#descriptionPane").html(currentReactionId < 0
 		? ""
-		: reaction.getValidationErrors().length > 0
-			? "Неверно! <button onclick='refreshDescription()'>Показать подсказку</button>"
-			: "Молодец, правильно!");
-	
+		: (passed = (reaction.getValidationErrors().length == 0))
+			? "Верно!"
+			: "Неверно! <button onclick='showHint()'>Показать подсказку</button>");
+
+	if (passed) {
+		$(".reaction" + currentReactionId).addClass("solved");
+		reaction.solved = true;
+	}	
 }
 
-function refreshDescription() {
+function showHint() {
 	var reaction = reactions.parsed[currentReactionId];
 	$("#descriptionPane").html(currentReactionId < 0
 		? ""

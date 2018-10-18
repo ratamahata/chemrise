@@ -88,7 +88,4 @@ function Reaction(initStr) {
 		}
 		return validationErrors;
 	}
-
-	
-
 }
