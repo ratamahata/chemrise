@@ -60,7 +60,11 @@ function Reaction(initStr) {
 
 	this.getValidationErrors = function() {
 		var validationErrors = [];
-		if (this.productsStr && this.reagents) {
+
+		if (this.selectedFakeProducts <= 0 && this.selectedRealProducts <= 0) {
+			validationErrors.push("Выберите продукты реакции из списка.");
+
+		} else if (this.productsStr && this.reagents) {
 			var arrReagents = this.getElements(this.reagents);
 			var arrProd = this.getElements(this.productsStr);
 

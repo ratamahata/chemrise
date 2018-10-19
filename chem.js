@@ -1,5 +1,5 @@
 var categories = [
-	"Все реакции",//-1
+	//"Все реакции",//-1
 	"Галогены",//0
 	"Сера",//1
 	"Азот",//2
@@ -70,7 +70,7 @@ function switchContent(selector, oldId, newId, defaultContent) {
 
 function switchCategory(catId) {
 	if (currentCategoryId == catId) return;
-	selectOneItem("category", catId+1, currentCategoryId+1);
+	selectOneItem("category", catId, currentCategoryId);
 
 	listArrayElementsCached("reaction", catId, currentCategoryId, reactions.parsed, function(el, reactId) {
 		var reaction = reactions.parsed[reactId];
@@ -160,7 +160,7 @@ $(function() {
 	listArrayElements("category", categories, function(el, id) {		
 		el.html(categories[id]);
 		el.click( function() {
-			switchCategory(id-1);
+			switchCategory(id);
 		})
 		return true;		
 	});
