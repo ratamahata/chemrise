@@ -81,6 +81,9 @@ function switchCategory(catId) {
 	});
 	var cl = $(".reaction.selected").attr("class");
 	var reactId = -1;
+	if (typeof cl != "string") {
+		cl = $(".reaction:visible").attr("class");
+	}
 	if (typeof cl == "string") {
 		reactId = cl.replace(/[a-z\s]/gi, "");
 	}
@@ -150,7 +153,7 @@ function showHint() {
 	var reaction = reactions.parsed[currentReactionId];
 	$("#descriptionPane").html(currentReactionId < 0
 		? ""
-		: reaction.getValidationErrors().join("<br/>\n<br/>\n"));
+		: reaction.getValidationErrors().join("<br/>\n"));
 }
 
 // Shorthand for $( document ).ready()
@@ -164,4 +167,5 @@ $(function() {
 		})
 		return true;		
 	});
+	switchCategory(1);
 });
