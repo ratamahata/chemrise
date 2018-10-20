@@ -15,24 +15,8 @@
     </asp:ContentPlaceHolder>
 </head>
 <body>
-
-    <a href="/admin.aspx/">Админка</a><br/><br/>
-
-    <form id="form1" runat="server">
-        <%-- TODO: Enable partial rendering by setting the EnablePartialRendering attribute to "true" to provide a smoother browsing experience.
-             Leaving partial rendering disabled will provide a better debugging experience while the application is in development. --%>
-
-        <asp:ScriptManager runat="server" EnablePartialRendering="false">
-            <Scripts>
-                <asp:ScriptReference Name="jquery" />
-                <asp:ScriptReference Name="WebUIValidation.js" Assembly="System.Web" />
-            </Scripts>
-        </asp:ScriptManager>
-
-        
         <asp:ContentPlaceHolder id="ContentPlaceHolder1" runat="server">
         </asp:ContentPlaceHolder>
-    </form>
 </body>
 </html>
 

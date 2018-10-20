@@ -4,7 +4,10 @@
 </asp:Content>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
-    <asp:ScriptManagerProxy ID="ScriptManagerProxy1" runat="server" />
+    
+
+<a href="/admin.aspx/">Админка</a><br/><br/>
+
 
 <table style="border: solid 2px red;" border="1" cellspacing="0" cellpadding="8">
 <tbody>
