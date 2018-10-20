@@ -8,10 +8,8 @@ public partial class _Default : System.Web.UI.Page {
     }
 
     protected String getAllCategories(int reactionType) {
-        chemdbEntities context = new chemdbEntities();
-        var cats = String.Join(
-            "', '",
-            context.Categories.Select(c => c.defaultName));
+        
+        var cats = String.Join("', '", ChemContext.db().getAllCategoriesCsv(reactionType));
         return cats;
     }
 
