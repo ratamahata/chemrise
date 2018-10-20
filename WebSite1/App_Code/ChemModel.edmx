@@ -1,0 +1,621 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="chemdbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Categories">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="reactionTypeId" Type="int" Nullable="false" />
+          <Property Name="defaultName" Type="nvarchar" MaxLength="80" Nullable="false" />
+          <Property Name="regex" Type="nvarchar" MaxLength="80" />
+        </EntityType>
+        <EntityType Name="CategoryNames">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="categoryId" Type="int" Nullable="false" />
+          <Property Name="languageId" Type="int" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="80" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Languages">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="40" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ReactionCategories">
+          <Key>
+            <PropertyRef Name="categoryId" />
+            <PropertyRef Name="reactionId" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="categoryId" Type="int" Nullable="false" />
+          <Property Name="reactionId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ReactionComments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="reactionId" Type="int" Nullable="false" />
+          <Property Name="languageId" Type="int" Nullable="false" />
+          <Property Name="conditions" Type="nvarchar" MaxLength="1000" />
+          <Property Name="description" Type="nvarchar" MaxLength="4000" />
+        </EntityType>
+        <EntityType Name="Reactions">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="reactionTypeId" Type="int" Nullable="false" />
+          <Property Name="reagents" Type="varchar" MaxLength="40" Nullable="false" />
+          <Property Name="products" Type="varchar" MaxLength="40" Nullable="false" />
+          <Property Name="fakeProducts" Type="varchar" MaxLength="80" />
+          <Property Name="conditions" Type="varchar" MaxLength="40" />
+        </EntityType>
+        <EntityType Name="ReactionTypeNames">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="reactionTypeId" Type="int" Nullable="false" />
+          <Property Name="languageId" Type="int" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="80" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ReactionTypes">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="defaultName" Type="nvarchar" MaxLength="80" />
+        </EntityType>
+        <Association Name="FK_Categories_ToReactionTypes">
+          <End Role="ReactionTypes" Type="Self.ReactionTypes" Multiplicity="1" />
+          <End Role="Categories" Type="Self.Categories" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ReactionTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Categories">
+              <PropertyRef Name="reactionTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CategoryNames_ToLanguages">
+          <End Role="Languages" Type="Self.Languages" Multiplicity="1" />
+          <End Role="CategoryNames" Type="Self.CategoryNames" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Languages">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="CategoryNames">
+              <PropertyRef Name="languageId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CategoryNames_ToReactionCategories">
+          <End Role="Categories" Type="Self.Categories" Multiplicity="1" />
+          <End Role="CategoryNames" Type="Self.CategoryNames" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Categories">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="CategoryNames">
+              <PropertyRef Name="categoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ReactionCategories_ToCategories">
+          <End Role="Categories" Type="Self.Categories" Multiplicity="1" />
+          <End Role="ReactionCategories" Type="Self.ReactionCategories" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Categories">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ReactionCategories">
+              <PropertyRef Name="categoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ReactionCategories_ToReactions">
+          <End Role="Reactions" Type="Self.Reactions" Multiplicity="1" />
+          <End Role="ReactionCategories" Type="Self.ReactionCategories" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Reactions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ReactionCategories">
+              <PropertyRef Name="reactionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ReactionComments_ToLanguages">
+          <End Role="Languages" Type="Self.Languages" Multiplicity="1" />
+          <End Role="ReactionComments" Type="Self.ReactionComments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Languages">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ReactionComments">
+              <PropertyRef Name="languageId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ReactionComments_ToReactions">
+          <End Role="Reactions" Type="Self.Reactions" Multiplicity="1" />
+          <End Role="ReactionComments" Type="Self.ReactionComments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Reactions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ReactionComments">
+              <PropertyRef Name="reactionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Reactions_ToReactionTypes">
+          <End Role="ReactionTypes" Type="Self.ReactionTypes" Multiplicity="1" />
+          <End Role="Reactions" Type="Self.Reactions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ReactionTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Reactions">
+              <PropertyRef Name="reactionTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ReactionTypeNames_ToLanguages">
+          <End Role="Languages" Type="Self.Languages" Multiplicity="1" />
+          <End Role="ReactionTypeNames" Type="Self.ReactionTypeNames" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Languages">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ReactionTypeNames">
+              <PropertyRef Name="languageId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ReactionTypeNames_ToReactionCategories">
+          <End Role="ReactionTypes" Type="Self.ReactionTypes" Multiplicity="1" />
+          <End Role="ReactionTypeNames" Type="Self.ReactionTypeNames" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ReactionTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ReactionTypeNames">
+              <PropertyRef Name="reactionTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="chemdbModelStoreContainer">
+          <EntitySet Name="Categories" EntityType="Self.Categories" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CategoryNames" EntityType="Self.CategoryNames" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Languages" EntityType="Self.Languages" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ReactionCategories" EntityType="Self.ReactionCategories" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ReactionComments" EntityType="Self.ReactionComments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Reactions" EntityType="Self.Reactions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ReactionTypeNames" EntityType="Self.ReactionTypeNames" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ReactionTypes" EntityType="Self.ReactionTypes" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Categories_ToReactionTypes" Association="Self.FK_Categories_ToReactionTypes">
+            <End Role="ReactionTypes" EntitySet="ReactionTypes" />
+            <End Role="Categories" EntitySet="Categories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CategoryNames_ToLanguages" Association="Self.FK_CategoryNames_ToLanguages">
+            <End Role="Languages" EntitySet="Languages" />
+            <End Role="CategoryNames" EntitySet="CategoryNames" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CategoryNames_ToReactionCategories" Association="Self.FK_CategoryNames_ToReactionCategories">
+            <End Role="Categories" EntitySet="Categories" />
+            <End Role="CategoryNames" EntitySet="CategoryNames" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ReactionCategories_ToCategories" Association="Self.FK_ReactionCategories_ToCategories">
+            <End Role="Categories" EntitySet="Categories" />
+            <End Role="ReactionCategories" EntitySet="ReactionCategories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ReactionCategories_ToReactions" Association="Self.FK_ReactionCategories_ToReactions">
+            <End Role="Reactions" EntitySet="Reactions" />
+            <End Role="ReactionCategories" EntitySet="ReactionCategories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ReactionComments_ToLanguages" Association="Self.FK_ReactionComments_ToLanguages">
+            <End Role="Languages" EntitySet="Languages" />
+            <End Role="ReactionComments" EntitySet="ReactionComments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ReactionComments_ToReactions" Association="Self.FK_ReactionComments_ToReactions">
+            <End Role="Reactions" EntitySet="Reactions" />
+            <End Role="ReactionComments" EntitySet="ReactionComments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Reactions_ToReactionTypes" Association="Self.FK_Reactions_ToReactionTypes">
+            <End Role="ReactionTypes" EntitySet="ReactionTypes" />
+            <End Role="Reactions" EntitySet="Reactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ReactionTypeNames_ToLanguages" Association="Self.FK_ReactionTypeNames_ToLanguages">
+            <End Role="Languages" EntitySet="Languages" />
+            <End Role="ReactionTypeNames" EntitySet="ReactionTypeNames" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ReactionTypeNames_ToReactionCategories" Association="Self.FK_ReactionTypeNames_ToReactionCategories">
+            <End Role="ReactionTypes" EntitySet="ReactionTypes" />
+            <End Role="ReactionTypeNames" EntitySet="ReactionTypeNames" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="chemdbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="CategoryNames" Relationship="Self.FK_CategoryNames_ToReactionCategories" FromRole="Categories" ToRole="CategoryNames" />
+          <Property Name="reactionTypeId" Type="Int32" Nullable="false" />
+          <Property Name="defaultName" Type="String" Nullable="false" MaxLength="80" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ReactionType" Relationship="chemdbModel.FK_Categories_ToReactionTypes" FromRole="Category" ToRole="ReactionType" />
+          <Property Name="regex" Type="String" MaxLength="80" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ReactionCategories" Relationship="chemdbModel.FK_ReactionCategories_ToCategories" FromRole="Category" ToRole="ReactionCategory" />
+        </EntityType>
+        <EntityType Name="CategoryName">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="categoryId" Type="Int32" Nullable="false" />
+          <Property Name="languageId" Type="Int32" Nullable="false" />
+          <Property Name="name" Type="String" MaxLength="80" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Category" Relationship="Self.FK_CategoryNames_ToReactionCategories" FromRole="CategoryNames" ToRole="Categories" />
+          <NavigationProperty Name="Language" Relationship="Self.FK_CategoryNames_ToLanguages" FromRole="CategoryNames" ToRole="Languages" />
+        </EntityType>
+        <EntityType Name="Language">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="40" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="CategoryNames" Relationship="Self.FK_CategoryNames_ToLanguages" FromRole="Languages" ToRole="CategoryNames" />
+          <NavigationProperty Name="ReactionComments" Relationship="Self.FK_ReactionComments_ToLanguages" FromRole="Languages" ToRole="ReactionComments" />
+          <NavigationProperty Name="ReactionTypeNames" Relationship="chemdbModel.FK_ReactionTypeNames_ToLanguages" FromRole="Language" ToRole="ReactionTypeName" />
+        </EntityType>
+        <EntityType Name="ReactionComment">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="reactionId" Type="Int32" Nullable="false" />
+          <Property Name="languageId" Type="Int32" Nullable="false" />
+          <Property Name="conditions" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="description" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Language" Relationship="Self.FK_ReactionComments_ToLanguages" FromRole="ReactionComments" ToRole="Languages" />
+          <NavigationProperty Name="Reaction" Relationship="Self.FK_ReactionComments_ToReactions" FromRole="ReactionComments" ToRole="Reactions" />
+        </EntityType>
+        <EntityType Name="Reaction">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="reagents" Type="String" MaxLength="40" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="products" Type="String" MaxLength="40" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="fakeProducts" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="conditions" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="ReactionComments" Relationship="Self.FK_ReactionComments_ToReactions" FromRole="Reactions" ToRole="ReactionComments" />
+          <Property Name="reactionTypeId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ReactionType" Relationship="chemdbModel.FK_Reactions_ToReactionTypes" FromRole="Reaction" ToRole="ReactionType" />
+          <NavigationProperty Name="ReactionCategories" Relationship="chemdbModel.FK_ReactionCategories_ToReactions" FromRole="Reaction" ToRole="ReactionCategory" />
+        </EntityType>
+        <Association Name="FK_CategoryNames_ToReactionCategories">
+          <End Role="Categories" Type="Self.Category" Multiplicity="1" />
+          <End Role="CategoryNames" Type="Self.CategoryName" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Categories">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="CategoryNames">
+              <PropertyRef Name="categoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CategoryNames_ToLanguages">
+          <End Role="Languages" Type="Self.Language" Multiplicity="1" />
+          <End Role="CategoryNames" Type="Self.CategoryName" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Languages">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="CategoryNames">
+              <PropertyRef Name="languageId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ReactionComments_ToLanguages">
+          <End Role="Languages" Type="Self.Language" Multiplicity="1" />
+          <End Role="ReactionComments" Type="Self.ReactionComment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Languages">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ReactionComments">
+              <PropertyRef Name="languageId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ReactionComments_ToReactions">
+          <End Role="Reactions" Type="Self.Reaction" Multiplicity="1" />
+          <End Role="ReactionComments" Type="Self.ReactionComment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Reactions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ReactionComments">
+              <PropertyRef Name="reactionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="chemdbEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Categories" EntityType="Self.Category" />
+          <EntitySet Name="CategoryNames" EntityType="Self.CategoryName" />
+          <EntitySet Name="Languages" EntityType="Self.Language" />
+          <EntitySet Name="ReactionComments" EntityType="Self.ReactionComment" />
+          <EntitySet Name="Reactions" EntityType="Self.Reaction" />
+          <AssociationSet Name="FK_CategoryNames_ToReactionCategories" Association="Self.FK_CategoryNames_ToReactionCategories">
+            <End Role="Categories" EntitySet="Categories" />
+            <End Role="CategoryNames" EntitySet="CategoryNames" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CategoryNames_ToLanguages" Association="Self.FK_CategoryNames_ToLanguages">
+            <End Role="Languages" EntitySet="Languages" />
+            <End Role="CategoryNames" EntitySet="CategoryNames" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ReactionComments_ToLanguages" Association="Self.FK_ReactionComments_ToLanguages">
+            <End Role="Languages" EntitySet="Languages" />
+            <End Role="ReactionComments" EntitySet="ReactionComments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ReactionComments_ToReactions" Association="Self.FK_ReactionComments_ToReactions">
+            <End Role="Reactions" EntitySet="Reactions" />
+            <End Role="ReactionComments" EntitySet="ReactionComments" />
+          </AssociationSet>
+          <EntitySet Name="ReactionTypeNames" EntityType="chemdbModel.ReactionTypeName" />
+          <EntitySet Name="ReactionTypes" EntityType="chemdbModel.ReactionType" />
+          <AssociationSet Name="FK_Categories_ToReactionTypes" Association="chemdbModel.FK_Categories_ToReactionTypes">
+            <End Role="ReactionType" EntitySet="ReactionTypes" />
+            <End Role="Category" EntitySet="Categories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ReactionTypeNames_ToLanguages" Association="chemdbModel.FK_ReactionTypeNames_ToLanguages">
+            <End Role="Language" EntitySet="Languages" />
+            <End Role="ReactionTypeName" EntitySet="ReactionTypeNames" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Reactions_ToReactionTypes" Association="chemdbModel.FK_Reactions_ToReactionTypes">
+            <End Role="ReactionType" EntitySet="ReactionTypes" />
+            <End Role="Reaction" EntitySet="Reactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ReactionTypeNames_ToReactionCategories" Association="chemdbModel.FK_ReactionTypeNames_ToReactionCategories">
+            <End Role="ReactionType" EntitySet="ReactionTypes" />
+            <End Role="ReactionTypeName" EntitySet="ReactionTypeNames" />
+          </AssociationSet>
+          <EntitySet Name="ReactionCategories" EntityType="chemdbModel.ReactionCategory" />
+          <AssociationSet Name="FK_ReactionCategories_ToCategories" Association="chemdbModel.FK_ReactionCategories_ToCategories">
+            <End Role="Category" EntitySet="Categories" />
+            <End Role="ReactionCategory" EntitySet="ReactionCategories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ReactionCategories_ToReactions" Association="chemdbModel.FK_ReactionCategories_ToReactions">
+            <End Role="Reaction" EntitySet="Reactions" />
+            <End Role="ReactionCategory" EntitySet="ReactionCategories" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="ReactionTypeName">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="reactionTypeId" Type="Int32" Nullable="false" />
+          <Property Name="languageId" Type="Int32" Nullable="false" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="80" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Language" Relationship="chemdbModel.FK_ReactionTypeNames_ToLanguages" FromRole="ReactionTypeName" ToRole="Language" />
+          <NavigationProperty Name="ReactionType" Relationship="chemdbModel.FK_ReactionTypeNames_ToReactionCategories" FromRole="ReactionTypeName" ToRole="ReactionType" />
+        </EntityType>
+        <EntityType Name="ReactionType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="defaultName" Type="String" MaxLength="80" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Categories" Relationship="chemdbModel.FK_Categories_ToReactionTypes" FromRole="ReactionType" ToRole="Category" />
+          <NavigationProperty Name="Reactions" Relationship="chemdbModel.FK_Reactions_ToReactionTypes" FromRole="ReactionType" ToRole="Reaction" />
+          <NavigationProperty Name="ReactionTypeNames" Relationship="chemdbModel.FK_ReactionTypeNames_ToReactionCategories" FromRole="ReactionType" ToRole="ReactionTypeName" />
+        </EntityType>
+        <Association Name="FK_Categories_ToReactionTypes">
+          <End Type="chemdbModel.ReactionType" Role="ReactionType" Multiplicity="1" />
+          <End Type="chemdbModel.Category" Role="Category" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ReactionType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Category">
+              <PropertyRef Name="reactionTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ReactionTypeNames_ToLanguages">
+          <End Type="chemdbModel.Language" Role="Language" Multiplicity="1" />
+          <End Type="chemdbModel.ReactionTypeName" Role="ReactionTypeName" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Language">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ReactionTypeName">
+              <PropertyRef Name="languageId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Reactions_ToReactionTypes">
+          <End Type="chemdbModel.ReactionType" Role="ReactionType" Multiplicity="1" />
+          <End Type="chemdbModel.Reaction" Role="Reaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ReactionType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Reaction">
+              <PropertyRef Name="reactionTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ReactionTypeNames_ToReactionCategories">
+          <End Type="chemdbModel.ReactionType" Role="ReactionType" Multiplicity="1" />
+          <End Type="chemdbModel.ReactionTypeName" Role="ReactionTypeName" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ReactionType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ReactionTypeName">
+              <PropertyRef Name="reactionTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ReactionCategory">
+          <Key>
+            <PropertyRef Name="categoryId" />
+            <PropertyRef Name="reactionId" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="categoryId" Type="Int32" Nullable="false" />
+          <Property Name="reactionId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Category" Relationship="chemdbModel.FK_ReactionCategories_ToCategories" FromRole="ReactionCategory" ToRole="Category" />
+          <NavigationProperty Name="Reaction" Relationship="chemdbModel.FK_ReactionCategories_ToReactions" FromRole="ReactionCategory" ToRole="Reaction" />
+        </EntityType>
+        <Association Name="FK_ReactionCategories_ToCategories">
+          <End Type="chemdbModel.Category" Role="Category" Multiplicity="1" />
+          <End Type="chemdbModel.ReactionCategory" Role="ReactionCategory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ReactionCategory">
+              <PropertyRef Name="categoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ReactionCategories_ToReactions">
+          <End Type="chemdbModel.Reaction" Role="Reaction" Multiplicity="1" />
+          <End Type="chemdbModel.ReactionCategory" Role="ReactionCategory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Reaction">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ReactionCategory">
+              <PropertyRef Name="reactionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="chemdbModelStoreContainer" CdmEntityContainer="chemdbEntities">
+          <EntitySetMapping Name="Categories">
+            <EntityTypeMapping TypeName="chemdbModel.Category">
+              <MappingFragment StoreEntitySet="Categories">
+                <ScalarProperty Name="regex" ColumnName="regex" />
+                <ScalarProperty Name="defaultName" ColumnName="defaultName" />
+                <ScalarProperty Name="reactionTypeId" ColumnName="reactionTypeId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CategoryNames">
+            <EntityTypeMapping TypeName="chemdbModel.CategoryName">
+              <MappingFragment StoreEntitySet="CategoryNames">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="categoryId" ColumnName="categoryId" />
+                <ScalarProperty Name="languageId" ColumnName="languageId" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Languages">
+            <EntityTypeMapping TypeName="chemdbModel.Language">
+              <MappingFragment StoreEntitySet="Languages">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ReactionComments">
+            <EntityTypeMapping TypeName="chemdbModel.ReactionComment">
+              <MappingFragment StoreEntitySet="ReactionComments">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="reactionId" ColumnName="reactionId" />
+                <ScalarProperty Name="languageId" ColumnName="languageId" />
+                <ScalarProperty Name="conditions" ColumnName="conditions" />
+                <ScalarProperty Name="description" ColumnName="description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Reactions">
+            <EntityTypeMapping TypeName="chemdbModel.Reaction">
+              <MappingFragment StoreEntitySet="Reactions">
+                <ScalarProperty Name="reactionTypeId" ColumnName="reactionTypeId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="reagents" ColumnName="reagents" />
+                <ScalarProperty Name="products" ColumnName="products" />
+                <ScalarProperty Name="fakeProducts" ColumnName="fakeProducts" />
+                <ScalarProperty Name="conditions" ColumnName="conditions" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ReactionTypeNames">
+            <EntityTypeMapping TypeName="chemdbModel.ReactionTypeName">
+              <MappingFragment StoreEntitySet="ReactionTypeNames">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="languageId" ColumnName="languageId" />
+                <ScalarProperty Name="reactionTypeId" ColumnName="reactionTypeId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ReactionTypes">
+            <EntityTypeMapping TypeName="chemdbModel.ReactionType">
+              <MappingFragment StoreEntitySet="ReactionTypes">
+                <ScalarProperty Name="defaultName" ColumnName="defaultName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ReactionCategories">
+            <EntityTypeMapping TypeName="chemdbModel.ReactionCategory">
+              <MappingFragment StoreEntitySet="ReactionCategories">
+                <ScalarProperty Name="reactionId" ColumnName="reactionId" />
+                <ScalarProperty Name="categoryId" ColumnName="categoryId" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
