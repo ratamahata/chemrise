@@ -1,4 +1,4 @@
-function Reaction(initStr) {
+п»їfunction Reaction(initStr) {
 	var productRegex = /([\+\-])\s*([^\s\+\-]+)/gi;
 	var digitRegex = /([a-z])(\d+)/gi;
 	var s = initStr.replace(digitRegex, "$1<sub>$2</sub>");
@@ -62,7 +62,7 @@ function Reaction(initStr) {
 		var validationErrors = [];
 
 		if (this.selectedFakeProducts <= 0 && this.selectedRealProducts <= 0) {
-			validationErrors.push("Выберите продукты реакции из списка.");
+			validationErrors.push("Р’С‹Р±РµСЂРёС‚Рµ РїСЂРѕРґСѓРєС‚С‹ СЂРµР°РєС†РёРё РёР· СЃРїРёСЃРєР°.");
 
 		} else if (this.productsStr && this.reagents) {
 			var arrReagents = this.getElements(this.reagents);
@@ -73,20 +73,20 @@ function Reaction(initStr) {
 				var redundantProducts = getMissingElements(arrReagents, arrProd);
 
 				if (missingProducts.length) {
-					//validationErrors.push("Не все исходные химические элементы найдены среди продуктов реакции.");
-					validationErrors.push("Среди продуктов реакции не найдены следующие химические элементы: " + missingProducts.join(", "));
+					//validationErrors.push("РќРµ РІСЃРµ РёСЃС…РѕРґРЅС‹Рµ С…РёРјРёС‡РµСЃРєРёРµ СЌР»РµРјРµРЅС‚С‹ РЅР°Р№РґРµРЅС‹ СЃСЂРµРґРё РїСЂРѕРґСѓРєС‚РѕРІ СЂРµР°РєС†РёРё.");
+					validationErrors.push("РЎСЂРµРґРё РїСЂРѕРґСѓРєС‚РѕРІ СЂРµР°РєС†РёРё РЅРµ РЅР°Р№РґРµРЅС‹ СЃР»РµРґСѓСЋС‰РёРµ С…РёРјРёС‡РµСЃРєРёРµ СЌР»РµРјРµРЅС‚С‹: " + missingProducts.join(", "));
 				}
 				if (redundantProducts.length) {
-					validationErrors.push("Обнаружены лишние химические элементы среди продуктов реакции: " + redundantProducts.join(", "));
+					validationErrors.push("РћР±РЅР°СЂСѓР¶РµРЅС‹ Р»РёС€РЅРёРµ С…РёРјРёС‡РµСЃРєРёРµ СЌР»РµРјРµРЅС‚С‹ СЃСЂРµРґРё РїСЂРѕРґСѓРєС‚РѕРІ СЂРµР°РєС†РёРё: " + redundantProducts.join(", "));
 				}
 			}
 			if (validationErrors.length == 0) 
 			{
 				if (this.selectedFakeProducts > 0) {
-					validationErrors.push("Выбраны вещества, которые не синтезируются в результате этой реакции!");
+					validationErrors.push("Р’С‹Р±СЂР°РЅС‹ РІРµС‰РµСЃС‚РІР°, РєРѕС‚РѕСЂС‹Рµ РЅРµ СЃРёРЅС‚РµР·РёСЂСѓСЋС‚СЃСЏ РІ СЂРµР·СѓР»СЊС‚Р°С‚Рµ СЌС‚РѕР№ СЂРµР°РєС†РёРё!");
 				};
 				if (this.selectedRealProducts < this.totalRealProducts) {
-					validationErrors.push("Не все продукты реакции выбраны.");
+					validationErrors.push("РќРµ РІСЃРµ РїСЂРѕРґСѓРєС‚С‹ СЂРµР°РєС†РёРё РІС‹Р±СЂР°РЅС‹.");
 				}
 			}
 		}
