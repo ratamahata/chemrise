@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Web;
 
@@ -9,19 +10,26 @@ using System.Web;
 public class DbLayer {
 
     static private chemdbEntities chemContext = new chemdbEntities();
+    NameValueCollection cache = new NameValueCollection();
+
     public DbLayer()
     {
     }
 
-    private String allCategoriesCsv;
     public String getAllCategoriesCsv(int typeId)
     {
-        if (allCategoriesCsv == null)
+        String key = "allCats" + typeId;
+        String value;
+        if ((value = cache[key]) == null)
         {
-            allCategoriesCsv = String.Join("', '", chemContext.Categories.Select(c => c.defaultName));
+            value = cache[key] = String.Join("', '", chemContext.Categories
+                .Where(c => c.reactionTypeId == typeId)
+                .Select(c => c.defaultName));
         }
-        return allCategoriesCsv;
+        return value;
     }
+
+
 
 
 }
