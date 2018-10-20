@@ -6,20 +6,34 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
     <asp:ScriptManagerProxy ID="ScriptManagerProxy1" runat="server" />
 
-    <h2 class="DDSubHeader">My tables</h2>
+<table style="border: solid 2px red;" border="1" cellspacing="0" cellpadding="8">
+<tbody>
+<tr>
+<td colspan="4">Составляем ОВР по неорганической химии для подготовки к ЕГЭ</td>
+</tr>
+<tr>
+<td rowspan="2">
+	<div class="category">Все реакции</div>
+</td>
+<td rowspan="2">
+	<div class="reaction">Реакция №1</div>
+</td>
+<td colspan="2" id="reactionPane">
+</td>
+</tr>
+<tr>
+<td>
+	<div class="product">H<sub>2</sub>O</div>
+</td>
+<td> 
+	<button onclick="checkProducts()" class="checkButton" style="display:none">проверить</button>
+	<div id="descriptionPane">&nbsp;</div>
+</td>
+</tr>
+</tbody>
+</table>
 
-    <br /><br />
 
-    <asp:GridView ID="Menu1" runat="server" AutoGenerateColumns="false"
-        CssClass="DDGridView" RowStyle-CssClass="td" HeaderStyle-CssClass="th" CellPadding="6">
-        <Columns>
-            <asp:TemplateField HeaderText="Table Name" SortExpression="TableName">
-                <ItemTemplate>
-                    <asp:DynamicHyperLink ID="HyperLink1" runat="server"><%# Eval("DisplayName") %></asp:DynamicHyperLink>
-                </ItemTemplate>
-            </asp:TemplateField>
-        </Columns>
-    </asp:GridView>
 </asp:Content>
 
 

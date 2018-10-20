@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/Site.master" CodeFile="Insert.aspx.cs" Inherits="Insert" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/admin/Admin.master" CodeFile="Insert.aspx.cs" Inherits="Insert" %>
 
 <asp:Content ID="headContent" ContentPlaceHolderID="head" Runat="Server">
 </asp:Content>
