@@ -1,12 +1,4 @@
-﻿var categories = [
-	//"Все реакции",//-1
-	"Галогены",//0
-	"Сера",//1
-	"Азот",//2
-	"Фосфор",//3
-	"Углерод",//4
-	"Кремний"]//5
-
+﻿
 var reactions = { raw : [
 	"2. KMnO4 + KNO2 + H2O -> MnO2 + KNO3 + KOH - K2MnO4 - O2 - H2 - H2O",//0
 	"1. SO2 + KMnO4 + H2O -> MnSO4 + K2SO4 + H2SO4 - SO3 - S - H2S - MnO2 - K2MnO4 - KOH - H2O - O2",//1
@@ -156,16 +148,3 @@ function showHint() {
 		: reaction.getValidationErrors().join("<br/>\n"));
 }
 
-// Shorthand for $( document ).ready()
-$(function() {
-	$(".reaction, .product, .category").hide();
-	parseReactions();
-	listArrayElements("category", categories, function(el, id) {		
-		el.html(categories[id]);
-		el.click( function() {
-			switchCategory(id);
-		})
-		return true;		
-	});
-	switchCategory(1);
-});

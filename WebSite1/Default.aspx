@@ -36,6 +36,25 @@
 </tbody>
 </table>
 
+<script lang="javascript">
+
+    var categories = ['<%=getAllCategories(1)%>'];
+
+    // Shorthand for $( document ).ready()
+    $(function () {
+        $(".reaction, .product, .category").hide();
+        parseReactions();
+        listArrayElements("category", categories, function (el, id) {
+            el.html(categories[id]);
+            el.click(function () {
+                switchCategory(id);
+            })
+            return true;
+        });
+        switchCategory(1);
+    });
+</script>
+
 
 </asp:Content>
 

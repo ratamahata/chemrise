@@ -61,8 +61,8 @@
             DebugPath = "~/Scripts/jquery-1.7.1.js",
             CdnPath = "http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.1.min.js",
             CdnDebugPath = "http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.1.js",
-            CdnSupportsSecureConnection = true,
-            LoadSuccessExpression = "window.jQuery"
+            CdnSupportsSecureConnection = true
+            //,LoadSuccessExpression = "window.jQuery"
         });
     }
     
