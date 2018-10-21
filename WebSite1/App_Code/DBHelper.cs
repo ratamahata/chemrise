@@ -15,6 +15,7 @@ public static class DBHelper
 
     public static String getReactionString(Reaction r, DbLayer dbLayer)
     {
+        List<String> allProducts = r.products.Replace(" ", "").Replace('-', '+').Split('+').ToList();
         List<String> fakeProducts;
         if (!string.IsNullOrEmpty(r.fakeProducts))
         {
@@ -23,24 +24,29 @@ public static class DBHelper
         else
         {
             fakeProducts = new List<string>();
+            String checkExistanceStr = "+" + (r.reagents + "+" + r.products).Replace(" ", "") + "+";
             foreach (String c in dbLayer.getAllCompounds(r.reactionTypeId))
             {
-                bool containsAll = true;
-                foreach (var match in elRegex.Matches(c))
+                if (!checkExistanceStr.Contains("+" + c + "+"))
                 {
-                    if (!r.reagents.Contains(match.ToString()))
+                    bool containsAll = true;
+                    foreach (var match in elRegex.Matches(c))
                     {
-                        containsAll = false;
-                        break;
+                        String str = match.ToString();
+                        if (!r.reagents.Contains(str))
+                        {
+                            containsAll = false;
+                            break;
+                        }
                     }
-                }
-                if (containsAll)
-                {
-                    fakeProducts.Add(c);
+                    if (containsAll)
+                    {
+                        fakeProducts.Add(c);
+                    }
                 }
             }
         }
-        List<String> allProducts = r.products.Replace(" ", "").Replace('-', '+').Split('+').ToList();
+        
         allProducts.AddRange(fakeProducts);
         Shuffle(allProducts);
 

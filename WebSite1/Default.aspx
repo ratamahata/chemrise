@@ -5,6 +5,7 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
     
+    <asp:ScriptManagerProxy ID="ScriptManagerProxy1" runat="server" />
 
 <a href="/admin.aspx/">Админка</a><br/><br/>
 
@@ -39,12 +40,10 @@
 <script lang="javascript">
 
     var categories = ['<%=getAllCategories(1)%>'];
-
     var reactions = {};
     reactions.cat1 = {};
     reactions.cat1.raw = ['<%=getAllReactions(1, 1)%>'];
 
-    // Shorthand for $( document ).ready()
     $(function () {
         $(".reaction, .product, .category").hide();
         parseReactions();

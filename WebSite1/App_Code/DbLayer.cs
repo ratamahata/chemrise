@@ -58,7 +58,7 @@ public class DbLayer {
         cache.TryGetValue(key, out value);
         if (value == null)
         {
-            value = (List<string>)(cache[key] = string.Join("'+'", chemContext.Reactions
+            value = (List<string>)(cache[key] = string.Join("+", chemContext.Reactions
                 .Where(c => c.reactionTypeId == typeId)
                 .Select(
                     c => (c.reagents + "+" + c.products

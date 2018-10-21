@@ -1,4 +1,6 @@
 ﻿var currentCategoryId, currentReactionId;
+var previousCategoryId;
+var newCatId;
 var cache = {};
 
 function parseReactions() {
@@ -60,6 +62,15 @@ function getReactions(catId) {
     return list == null ? null : list.parsed;
 }
 
+function setReactions(catId, rawStr) {
+    var list = reactions["cat" + catId] = {};
+    list.parsed = [];
+    var arr = rawStr.split(',');
+    for (k in arr) {
+        list.parsed.push(new Reaction(arr[k]));
+    }
+}
+
 function getCurrentReaction() {    
     return getReactions(currentCategoryId)[currentReactionId];
 }
@@ -69,10 +80,19 @@ function getReaction(catId, reactId) {
     return list && ~reactId ? list[reactId] : null;
 }
 
-function switchCategory(catId) {
-	if (currentCategoryId == catId) return;
-	selectOneItem("category", catId, currentCategoryId);
+function switchNewCategory(rlist) {
+    setReactions(newCatId, rlist);
+    switchCategory(newCatId)
+}
 
+function switchCategory(catId) {
+    if (currentCategoryId == catId) return;
+    if (!getReactions(catId)) {
+        newCatId = catId;
+        PageMethods.getAllReactionsStr(1, catId, switchNewCategory)
+        return;
+    }
+	selectOneItem("category", catId, currentCategoryId);
 	listArrayElementsCached("reaction", catId, currentCategoryId, getReactions(catId), function (el, reactId) {	    
 	    var reaction = getReaction(catId, reactId);		
 		el.html(reaction.reagents);
@@ -87,18 +107,19 @@ function switchCategory(catId) {
 	if (typeof cl == "string") {
 		reactId = cl.replace(/[a-z\s]/gi, "");
 	}
+	previousCategoryId = (typeof currentCategoryId == "undefined" ? catId : currentCategoryId);
 	currentCategoryId = catId;
 	switchReaction(reactId);	
 }
 
 function switchReaction(reactId) {	
-	if (currentReactionId == reactId) return;
+    if (currentReactionId == reactId && previousCategoryId == currentCategoryId) return;
 	selectOneItem("reaction", reactId, currentReactionId);
 	var reactionStr;
 	if (~reactId) {
 	    var reaction = getReaction(currentCategoryId, reactId);
 	    reactionStr = reaction.reagents + " -> ";
-		listArrayElementsCached("product", reactId, currentReactionId, reaction.products, function(el, prodId) {
+	    listArrayElementsCached("product", currentCategoryId + "_" + reactId, previousCategoryId + "_" + currentReactionId, reaction.products, function (el, prodId) {
 			el.html(reaction.getProductStr(prodId));
 			el.attr('onclick', 'toggleProduct(' + prodId + ')');			
 			return true;

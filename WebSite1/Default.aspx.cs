@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.DynamicData;
+using System.Web.Services;
 
 public partial class _Default : System.Web.UI.Page {
     protected void Page_Load(object sender, EventArgs e) {
@@ -13,10 +14,19 @@ public partial class _Default : System.Web.UI.Page {
         return cats;
     }
 
-    protected String getAllReactions(int reactionType, int catId)
+    
+    public static String getAllReactions(int reactionType, int catId)
     {
         var reacts = String.Join("', '", ChemContext.db().getReactions(reactionType, catId));
         return reacts;
     }
+
+    [WebMethod]
+    public static String getAllReactionsStr(int reactionType, int catId)
+    {
+        var reacts = String.Join(",", ChemContext.db().getReactions(reactionType, catId));
+        return reacts;
+    }
+
 
 }
