@@ -1,21 +1,18 @@
 ﻿
-var reactions = { raw : [
-	"2. KMnO4 + KNO2 + H2O -> MnO2 + KNO3 + KOH - K2MnO4 - O2 - H2 - H2O",//0
-	"1. SO2 + KMnO4 + H2O -> MnSO4 + K2SO4 + H2SO4 - SO3 - S - H2S - MnO2 - K2MnO4 - KOH - H2O - O2",//1
-	"1. SO2 + KMnO4 + KOH -> K2MnO4 +K2SO4 + H2O - H2SO4 - SO3 - S - H2S - MnO2 - O2",//2
-	"3. PH3 + KMnO4 + KOH -> K3PO4 + K2MnO4 + H2O - H3PO4 - P4 - P2O5 - MnO2 - O2"//3
-]}
-
 var currentCategoryId, currentReactionId;
 var cache = {};
 
 function parseReactions() {
 	var productRegex = /[\+\-]\s*[^\s\+\-]+/gi;
 	var digitRegex = /([a-z])(\d+)/gi;
-	reactions.parsed = [];
-	for (r in reactions.raw) {
-		var obj = new Reaction(reactions.raw[r]);
-		reactions.parsed.push(obj);
+	
+	for (var key in reactions) {
+	    var reactionsInCat = reactions[key].raw;
+	    var arr = reactions[key].parsed = [];
+	    for (var r in reactionsInCat) {
+	        var obj = new Reaction(reactionsInCat[r]);
+	        arr.push(obj);
+	    }
 	}
 }
 
@@ -60,13 +57,24 @@ function switchContent(selector, oldId, newId, defaultContent) {
 		: defaultContent);
 }
 
+function getReactions(catId) {
+    return reactions["cat" + catId].parsed;
+}
+
+function getCurrentReaction() {    
+    return getReactions(currentCategoryId)[currentReactionId];
+}
+
+function getReaction(catId, reactId) {
+    return reactions["cat" + catId].parsed[reactId];
+}
+
 function switchCategory(catId) {
 	if (currentCategoryId == catId) return;
 	selectOneItem("category", catId, currentCategoryId);
 
-	listArrayElementsCached("reaction", catId, currentCategoryId, reactions.parsed, function(el, reactId) {
-		var reaction = reactions.parsed[reactId];
-		if (~catId && reaction.categoryId != catId) return false;
+	listArrayElementsCached("reaction", catId, currentCategoryId, getReactions(catId), function (el, reactId) {	    
+	    var reaction = getReaction(catId, reactId);		
 		el.html(reaction.reagents);
 		el.attr("onclick", "switchReaction(" + reactId + ")");		
 		return true;
@@ -88,8 +96,8 @@ function switchReaction(reactId) {
 	selectOneItem("reaction", reactId, currentReactionId);
 	var reactionStr;
 	if (~reactId) {
-		var reaction = reactions.parsed[reactId];
-		reactionStr = reaction.reagents + " -> ";
+	    var reaction = getReaction(currentReactionId, reactId);
+	    reactionStr = reaction.reagents + " -> ";
 		listArrayElementsCached("product", reactId, currentReactionId, reaction.products, function(el, prodId) {
 			el.html(reaction.getProductStr(prodId));
 			el.attr('onclick', 'toggleProduct(' + prodId + ')');			
@@ -111,7 +119,7 @@ function switchReaction(reactId) {
 }
 
 function toggleProduct(prodId) {
-	var reaction = reactions.parsed[currentReactionId];
+    var reaction = getCurrentReaction();
 	if (reaction.solved) return;
 	var p = $(".product"+prodId);
 	var r_el = $("#reactionPane");
@@ -127,7 +135,7 @@ function toggleProduct(prodId) {
 }
 
 function checkProducts() {
-	var reaction = reactions.parsed[currentReactionId];
+    var reaction = getCurrentReaction();
 	var passed = false;
 	$("#descriptionPane").html(currentReactionId < 0
 		? ""
@@ -142,7 +150,7 @@ function checkProducts() {
 }
 
 function showHint() {
-	var reaction = reactions.parsed[currentReactionId];
+    var reaction = getCurrentReaction();
 	$("#descriptionPane").html(currentReactionId < 0
 		? ""
 		: reaction.getValidationErrors().join("<br/>\n"));

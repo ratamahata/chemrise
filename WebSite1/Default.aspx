@@ -40,6 +40,10 @@
 
     var categories = ['<%=getAllCategories(1)%>'];
 
+    var reactions = {};
+    reactions.cat1 = {};
+    reactions.cat1.raw = ['<%=getAllReactions(1, 1)%>'];
+
     // Shorthand for $( document ).ready()
     $(function () {
         $(".reaction, .product, .category").hide();

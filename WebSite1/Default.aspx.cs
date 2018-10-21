@@ -9,8 +9,14 @@ public partial class _Default : System.Web.UI.Page {
 
     protected String getAllCategories(int reactionType) {
         
-        var cats = String.Join("', '", ChemContext.db().getAllCategoriesCsv(reactionType));
+        var cats = String.Join("', '", ChemContext.db().getAllCategories(reactionType));
         return cats;
+    }
+
+    protected String getAllReactions(int reactionType, int catId)
+    {
+        var reacts = String.Join("', '", ChemContext.db().getReactions(reactionType, catId));
+        return reacts;
     }
 
 }
