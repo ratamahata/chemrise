@@ -1,11 +1,9 @@
-﻿
-var currentCategoryId, currentReactionId;
+﻿var currentCategoryId, currentReactionId;
 var cache = {};
 
 function parseReactions() {
 	var productRegex = /[\+\-]\s*[^\s\+\-]+/gi;
-	var digitRegex = /([a-z])(\d+)/gi;
-	
+	var digitRegex = /([a-z])(\d+)/gi;	
 	for (var key in reactions) {
 	    var reactionsInCat = reactions[key].raw;
 	    var arr = reactions[key].parsed = [];
@@ -58,7 +56,8 @@ function switchContent(selector, oldId, newId, defaultContent) {
 }
 
 function getReactions(catId) {
-    return reactions["cat" + catId].parsed;
+    var list = reactions["cat" + catId];
+    return list == null ? null : list.parsed;
 }
 
 function getCurrentReaction() {    
@@ -66,7 +65,8 @@ function getCurrentReaction() {
 }
 
 function getReaction(catId, reactId) {
-    return reactions["cat" + catId].parsed[reactId];
+    var list = getReactions(catId);
+    return list && ~reactId ? list[reactId] : null;
 }
 
 function switchCategory(catId) {
@@ -87,8 +87,8 @@ function switchCategory(catId) {
 	if (typeof cl == "string") {
 		reactId = cl.replace(/[a-z\s]/gi, "");
 	}
-	switchReaction(reactId);
 	currentCategoryId = catId;
+	switchReaction(reactId);	
 }
 
 function switchReaction(reactId) {	
@@ -96,7 +96,7 @@ function switchReaction(reactId) {
 	selectOneItem("reaction", reactId, currentReactionId);
 	var reactionStr;
 	if (~reactId) {
-	    var reaction = getReaction(currentReactionId, reactId);
+	    var reaction = getReaction(currentCategoryId, reactId);
 	    reactionStr = reaction.reagents + " -> ";
 		listArrayElementsCached("product", reactId, currentReactionId, reaction.products, function(el, prodId) {
 			el.html(reaction.getProductStr(prodId));
